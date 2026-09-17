@@ -5,6 +5,7 @@ import com.example.demo.client.dummyjson.DummyJsonProducto;
 import com.example.demo.dto.producto.ProductoDTO;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 @Service
@@ -17,7 +18,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
    @Override
-public List<ProductoDto> listarTodos() {
+public List<ProductoDTO> listarTodos() {
     return dummyJsonClient.listarProductos()
             .products()
             .stream()
@@ -31,7 +32,7 @@ public List<ProductoDto> listarTodos() {
     }
 
     private ProductoDTO aProductoDTO(DummyJsonProducto e) {
-        return new ProductoDTO(
+        return new ProductoDTO            (
                 e.id(), e.title(), e.description(), e.category(), e.brand(),
                 e.price(), e.discountPercentage(), e.stock(), e.rating(), e.thumbnail()
         );

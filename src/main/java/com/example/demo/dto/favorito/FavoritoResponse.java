@@ -1,5 +1,4 @@
-package com.example.demo.dto.producto.Favorito;
-
+package com.example.demo.dto.favorito;
 import java.time.LocalDateTime;
 
 public record FavoritoResponse(
