@@ -1,0 +1,52 @@
+### === PRODUCTOS ===
+
+### Caso de éxito: listar productos
+GET http://localhost:8080/api/productos
+
+### Caso de éxito: obtener un producto por id
+GET http://localhost:8080/api/productos/1
+
+### Caso de error: producto que no existe
+GET http://localhost:8080/api/productos/99999
+
+
+### === FAVORITOS ===
+
+### Caso de éxito: crear un favorito
+POST http://localhost:8080/api/favoritos
+Content-Type: application/json
+
+{
+  "productoId": 1,
+  "nota": "me gustó mucho"
+}
+
+### Caso de éxito: listar favoritos
+GET http://localhost:8080/api/favoritos
+
+### Caso de éxito: obtener un favorito por id (ajustar el id según lo que devolvió el POST)
+GET http://localhost:8080/api/favoritos/1
+
+### Caso de éxito: actualizar un favorito
+PUT http://localhost:8080/api/favoritos/1
+Content-Type: application/json
+
+{
+  "productoId": 1,
+  "nota": "nota actualizada"
+}
+
+### Caso de error: validación fallida (productoId null, nota vacía)
+POST http://localhost:8080/api/favoritos
+Content-Type: application/json
+
+{
+  "productoId": null,
+  "nota": ""
+}
+
+### Caso de error: favorito que no existe
+GET http://localhost:8080/api/favoritos/99999
+
+### Caso de éxito: eliminar un favorito
+DELETE http://localhost:8080/api/favoritos/1

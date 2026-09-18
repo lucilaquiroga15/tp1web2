@@ -1,67 +1,108 @@
 # TP1 · Spring Boot, API REST y arquitectura en capas
 
-Punto de partida del práctico. Está armada la **configuración e
-infraestructura transversal** que van a necesitar sin importar cómo
-resuelvan cada consigna; lo que falta —el diseño y la lógica propia de cada
-recurso— se va a ir sumando a esta rama a medida que avance la cursada.
+Aplicación backend desarrollada con Spring Boot como introducción al desarrollo de APIs REST y a la arquitectura en capas.
 
-## Cómo levantar el proyecto
+El proyecto implementa una API propia con productos y favoritos, incorporando DTOs, validación de datos, manejo centralizado de errores y documentación mediante Swagger/OpenAPI.
 
-Requiere Java 25. Usar siempre el wrapper, nunca un `mvn` instalado aparte:
+> **Nota:** Este práctico no utiliza una base de datos ni JPA. Los datos se almacenan en memoria. La persistencia con PostgreSQL, JPA/Hibernate y Flyway se aborda en el TP2.
+
+## 🛠️ Tecnologías
+
+- Java 25
+- Spring Boot 4.1.x
+- Maven
+- Spring Web MVC
+- Bean Validation
+- Springdoc OpenAPI / Swagger
+- RestClient
+- API externa DummyJSON
+
+## 🏗️ Arquitectura
+
+El proyecto utiliza una arquitectura en capas:
 
 ```
-# Windows
-.\mvnw.cmd spring-boot:run
+Controller
+    ↓
+Service
+    ↓
+Repository
+```
 
-# macOS/Linux
+Los DTOs permiten desacoplar los datos expuestos por la API de los modelos internos de la aplicación.
+
+## 📌 Funcionalidades
+
+### Productos
+
+El backend consume la API pública de DummyJSON y transforma sus datos para exponer un contrato propio.
+
+Endpoints principales:
+```
+GET /api/productos
+GET /api/productos/{id}
+```
+
+### Favoritos
+
+Se implementa un recurso propio de favoritos con almacenamiento en memoria y operaciones CRUD completas.
+
+```
+POST   /api/favoritos
+GET    /api/favoritos
+GET    /api/favoritos/{id}
+PUT    /api/favoritos/{id}
+DELETE /api/favoritos/{id}
+```
+
+## ✅ Validación y manejo de errores
+
+La API incorpora:
+- Validación de datos mediante Bean Validation.
+- Respuestas `400 Bad Request` ante datos inválidos.
+- `404 Not Found` cuando no existe un favorito.
+- Manejo centralizado de excepciones mediante `@ControllerAdvice`.
+- Tratamiento de errores al consumir el servicio externo.
+
+## 📚 Documentación
+
+La API está documentada utilizando Swagger/OpenAPI, permitiendo consultar y probar los endpoints disponibles desde Swagger UI.
+
+## 🚀 Requisitos
+
+- Java 25
+
+## 🚀 Ejecución
+
+Clonar el repositorio y ejecutar el proyecto mediante Maven:
+
+```bash
 ./mvnw spring-boot:run
 ```
 
-Cuando el log muestre `Started DemoApplication`, la app queda escuchando en
-`http://localhost:8080`.
+En Windows:
 
-Para compilar y correr los tests: `./mvnw test` (o `.\mvnw.cmd test`).
-
-## Endpoints disponibles hoy
-
-| Método | Path | Qué hace |
-|---|---|---|
-| GET | `/health` | Chequeo de salud básico |
-| GET | `/ping` | Devuelve `pong`, sin JSON — otro chequeo trivial |
-
-```
-curl http://localhost:8080/health
-curl http://localhost:8080/ping
+```bash
+mvnw.cmd spring-boot:run
 ```
 
-## Qué ya está armado
+Una vez iniciada la aplicación, queda disponible en `http://localhost:8080`:
 
-- **`config/RestClientConfig`**: bean de `RestClient` apuntado a la
-  `base-url` de DummyJSON (`app.dummyjson.base-url` en
-  `application.properties`). Listo para inyectar.
-- **`config/OpenApiConfig`**: metadata general de Swagger UI.
-- **`client/dummyjson/DummyJsonProducto` y `DummyJsonProductosResponse`**:
-  la forma exacta del JSON que devuelve `https://dummyjson.com/products` —
-  para no tener que adivinar los nombres de campo del proveedor externo.
-- **`exception/GlobalExceptionHandler`** (+ `RecursoNoEncontradoException` y
-  `ServicioExternoException`): manejo uniforme de errores para toda la API
-  (`ProblemDetail`). Ya contempla 404 y errores de un servicio externo —
-  se reusa tal cual para cualquier recurso nuevo que se agregue.
+- API: `http://localhost:8080/api/productos` y `http://localhost:8080/api/favoritos`
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
 
-## Qué falta (eso es la consigna)
+## 🧪 Evidencia
 
-- Un cliente propio (`DummyJsonClient` o como se llame) que use el
-  `RestClient` ya configurado para llamar a `/products` y `/products/{id}`,
-  manejando los errores de red/HTTP con las excepciones ya definidas.
-- Un DTO propio para el producto (no el JSON externo tal cual) y el
-  service/controller de `/api/productos`.
-- Todo el recurso de favoritos: entidad, repository en memoria, DTOs,
-  service y controller CRUD.
-- Anotar los controllers con `@Tag`/`@Operation` para que Swagger UI los
-  documente.
+Casos de éxito y de error por recurso, disponibles en el archivo [`requests.http`](./requests.http) (usar con la extensión REST Client de VS Code).
 
-## Dependencias
+## 📖 Objetivos del TP
 
-- `spring-boot-starter-webmvc` — Spring MVC + Tomcat embebido.
-- `spring-boot-starter-validation` — Bean Validation (`@NotNull`, `@NotBlank`, ...).
-- `springdoc-openapi-starter-webmvc-ui` — Swagger UI / OpenAPI.
+- Configurar un proyecto Spring Boot con Maven.
+- Aplicar arquitectura en capas.
+- Consumir un servicio web externo.
+- Diseñar una API REST propia.
+- Trabajar con DTOs.
+- Implementar operaciones CRUD.
+- Aplicar validación de datos.
+- Implementar manejo uniforme de errores.
+- Documentar una API con Swagger/OpenAPI.

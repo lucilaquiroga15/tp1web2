@@ -10,18 +10,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/productos")
+@Tag(name = "Producto", description = "Catalogo de solo lectura de productos")
 public class ProductoController {
     private final ProductoService service;
 
     public ProductoController(ProductoService service){
         this.service = service;
     }
-
+    @Operation(summary = "Listar todos los productos")
     @GetMapping
     public List<ProductoDTO> listar() {
         return service.obtenerTodos();
     }
 
+    @Operation(summary = "Obtener producto por ID")
     @GetMapping("/{id}")
     public ProductoDTO buscar(@PathVariable Long id) {
         return service.obtenerPorId(id);
