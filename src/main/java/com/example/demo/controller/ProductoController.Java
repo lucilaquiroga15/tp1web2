@@ -8,26 +8,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController 
+@RestController
 @RequestMapping("/api/productos")
-@Tag(name="productos",description = "Catalogo de solo lectura (consumido de DummyJSON)")
 public class ProductoController {
+    private final ProductoService service;
 
-    private final ProductoService ProductoService; 
-
-    public ProductoController (ProductoService productoService) {
-        this.productoService = productoService;
+    public ProductoController(ProductoService service){
+        this.service = service;
     }
 
-    @Operation (summary = "Lista todos los productos del catalogo")
-    @GetMapping 
-    public List <ProductoDTO> listar () {
-        return productoService.listarTodos();
+    @GetMapping
+    public List<ProductoDTO> listar() {
+        return service.obtenerTodos();
     }
 
-    @Operation(summary = "Obtiene un producto por id")
     @GetMapping("/{id}")
-    public ProductoDTO obtenerUno (@PathVariable Long id) {
-        return productoService.ObtenerPorId(id);
+    public ProductoDTO buscar(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
+    //Recibe las peticiones web y expone el catalogo al usuario.
 }

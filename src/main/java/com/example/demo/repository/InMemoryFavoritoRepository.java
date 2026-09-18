@@ -15,12 +15,12 @@ public class InMemoryFavoritoRepository implements FavoritoRepository {
     private final AtomicLong nextId = new AtomicLong(1);
 
     @Override
-    public List<Favorito> findAll() {
+    public List<Favorito> buscarTodos() {
         return List.copyOf(datos.values());
     }
 
     @Override
-    public Optional<Favorito> findById(Long id) {
+    public Optional<Favorito> buscarPorId(Long id) {
         return Optional.ofNullable(datos.get(id));
     }
 

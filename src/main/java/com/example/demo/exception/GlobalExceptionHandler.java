@@ -51,6 +51,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenerico(Exception ex) {
+            ex.printStackTrace(); // 👈 TEMPORAL — para ver el error real en consola, después lo sacamos
+
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");
         problema.setTitle("Error interno");
