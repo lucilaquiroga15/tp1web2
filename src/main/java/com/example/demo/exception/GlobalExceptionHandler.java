@@ -29,6 +29,13 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(ConflictoException.class)
+    public ProblemDetail handleConflicto(ConflictoException ex) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problema.setTitle("Conflicto");
+        return problema;
+    }
+    
     @ExceptionHandler(ServicioExternoException.class)
     public ProblemDetail handleServicioExterno(ServicioExternoException ex) {
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY, ex.getMessage());
@@ -51,7 +58,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenerico(Exception ex) {
-            ex.printStackTrace(); // 👈 TEMPORAL — para ver el error real en consola, después lo sacamos
+            
 
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado");

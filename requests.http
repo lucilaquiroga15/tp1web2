@@ -1,52 +1,192 @@
-### === PRODUCTOS ===
+@baseUrl = http://localhost:8080
 
-### Caso de éxito: listar productos
-GET http://localhost:8080/api/productos
+### ======================= PRODUCTOS =======================
 
-### Caso de éxito: obtener un producto por id
-GET http://localhost:8080/api/productos/1
+### Éxito: listar productos
+GET {{baseUrl}}/api/productos
 
-### Caso de error: producto que no existe
-GET http://localhost:8080/api/productos/99999
+### Éxito: obtener un producto por id
+GET {{baseUrl}}/api/productos/1
+
+### Error 404: producto que no existe
+GET {{baseUrl}}/api/productos/99999
 
 
-### === FAVORITOS ===
+### ======================== LISTAS =========================
 
-### Caso de éxito: crear un favorito
-POST http://localhost:8080/api/favoritos
+### Éxito 201: crear lista A
+# @name crearListaA
+POST {{baseUrl}}/api/listas
+Content-Type: application/json
+
+{
+  "nombre": "Regalos"
+}
+
+### Éxito 201: crear lista B
+# @name crearListaB
+POST {{baseUrl}}/api/listas
+Content-Type: application/json
+
+{
+  "nombre": "Para comprar en oferta"
+}
+
+### Éxito 200: listar listas
+GET {{baseUrl}}/api/listas
+
+### Éxito 200: obtener lista A
+GET {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}
+
+### Error 404: lista que no existe
+GET {{baseUrl}}/api/listas/99999
+
+### Error 400: nombre vacío
+POST {{baseUrl}}/api/listas
+Content-Type: application/json
+
+{
+  "nombre": ""
+}
+
+
+### ======================= FAVORITOS =======================
+
+### Éxito 201: crear favorito 1 en la lista A
+# @name crearFavorito1
+POST {{baseUrl}}/api/favoritos
 Content-Type: application/json
 
 {
   "productoId": 1,
-  "nota": "me gustó mucho"
+  "nota": "me gustó mucho",
+  "listaId": {{crearListaA.response.body.$.id}}
 }
 
-### Caso de éxito: listar favoritos
-GET http://localhost:8080/api/favoritos
+### Éxito 201: crear favorito 2 en la lista A
+# @name crearFavorito2
+POST {{baseUrl}}/api/favoritos
+Content-Type: application/json
 
-### Caso de éxito: obtener un favorito por id (ajustar el id según lo que devolvió el POST)
-GET http://localhost:8080/api/favoritos/1
+{
+  "productoId": 2,
+  "nota": "para el cumpleaños",
+  "listaId": {{crearListaA.response.body.$.id}}
+}
 
-### Caso de éxito: actualizar un favorito
-PUT http://localhost:8080/api/favoritos/1
+### Éxito 200: listar favoritos
+GET {{baseUrl}}/api/favoritos
+
+### Éxito 200: obtener favorito 1
+GET {{baseUrl}}/api/favoritos/{{crearFavorito1.response.body.$.id}}
+
+### Éxito 200: actualizar favorito 1
+PUT {{baseUrl}}/api/favoritos/{{crearFavorito1.response.body.$.id}}
 Content-Type: application/json
 
 {
   "productoId": 1,
-  "nota": "nota actualizada"
+  "nota": "nota actualizada",
+  "listaId": {{crearListaA.response.body.$.id}}
 }
 
-### Caso de error: validación fallida (productoId null, nota vacía)
-POST http://localhost:8080/api/favoritos
+### Error 400: validación (productoId null, nota vacía, listaId null)
+POST {{baseUrl}}/api/favoritos
 Content-Type: application/json
 
 {
   "productoId": null,
-  "nota": ""
+  "nota": "",
+  "listaId": null
 }
 
-### Caso de error: favorito que no existe
-GET http://localhost:8080/api/favoritos/99999
+### Error 404: favorito en una lista que no existe
+POST {{baseUrl}}/api/favoritos
+Content-Type: application/json
 
-### Caso de éxito: eliminar un favorito
-DELETE http://localhost:8080/api/favoritos/1
+{
+  "productoId": 1,
+  "nota": "lista fantasma",
+  "listaId": 99999
+}
+
+### Error 404: favorito que no existe
+GET {{baseUrl}}/api/favoritos/99999
+
+
+### ================ RELACIÓN LISTA - FAVORITOS ================
+
+### Éxito 200: favoritos de la lista A
+GET {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}/favoritos
+
+### Error 404: favoritos de una lista que no existe
+GET {{baseUrl}}/api/listas/99999/favoritos
+
+### Error 409: eliminar una lista que todavía tiene favoritos
+DELETE {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}
+
+
+### ============ MOVER FAVORITOS (TRANSACCIONAL) ============
+
+### Error 404: lista origen que no existe
+POST {{baseUrl}}/api/listas/99999/mover-favoritos
+Content-Type: application/json
+
+{
+  "listaDestinoId": {{crearListaB.response.body.$.id}}
+}
+
+### Error 404: lista destino que no existe
+POST {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}/mover-favoritos
+Content-Type: application/json
+
+{
+  "listaDestinoId": 99999
+}
+
+### Error 409: origen y destino son la misma lista
+POST {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}/mover-favoritos
+Content-Type: application/json
+
+{
+  "listaDestinoId": {{crearListaA.response.body.$.id}}
+}
+
+### Error 400: body sin listaDestinoId
+POST {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}/mover-favoritos
+Content-Type: application/json
+
+{
+}
+
+### Éxito 200: mover los favoritos de A a B (y eliminar A)
+POST {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}/mover-favoritos
+Content-Type: application/json
+
+{
+  "listaDestinoId": {{crearListaB.response.body.$.id}}
+}
+
+### Verificación: los favoritos ahora están en la lista B
+GET {{baseUrl}}/api/listas/{{crearListaB.response.body.$.id}}/favoritos
+
+### Verificación 404: la lista A ya no existe
+GET {{baseUrl}}/api/listas/{{crearListaA.response.body.$.id}}
+
+
+### ================== ELIMINAR (ÉXITOS 204) ==================
+
+### Éxito 204: eliminar un favorito
+DELETE {{baseUrl}}/api/favoritos/{{crearFavorito1.response.body.$.id}}
+
+### Éxito 204: crear una lista vacía y eliminarla
+# @name crearListaVacia
+POST {{baseUrl}}/api/listas
+Content-Type: application/json
+
+{
+  "nombre": "Temporal"
+}
+
+###
+DELETE {{baseUrl}}/api/listas/{{crearListaVacia.response.body.$.id}}

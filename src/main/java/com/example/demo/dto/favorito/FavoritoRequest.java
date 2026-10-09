@@ -1,4 +1,5 @@
 package com.example.demo.dto.favorito;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -8,7 +9,10 @@ public record FavoritoRequest(
     Long productoId,
 
     @NotBlank(message = "La nota no puede estar vacía")
-    String nota
+    String nota,
+
+    @NotNull(message = "El id de la lista no puede ser nulo")
+    Long listaId
 
 ) {
 }
