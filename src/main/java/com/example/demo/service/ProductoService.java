@@ -3,8 +3,8 @@ import com.example.demo.dto.producto.ProductoDTO;
 import java.util.List;
 import org.springframework.web.client.RestClient;
 import java.math.BigDecimal;
-import com.example.demo.client.dummyjson.DummyJsonProducto;
-import com.example.demo.client.dummyjson.DummyJsonProductosResponse;
+import com.example.demo.dummyjson.DummyJsonProducto;
+import com.example.demo.dummyjson.DummyJsonProductosResponse;
 import org.springframework.stereotype.Service;
 /*
 *

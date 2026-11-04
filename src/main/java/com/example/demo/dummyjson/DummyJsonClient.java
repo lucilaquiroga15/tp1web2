@@ -1,4 +1,5 @@
-package com.example.demo.client.dummyjson;
+package com.example.demo.dummyjson;
+
 
 import com.example.demo.exception.RecursoNoEncontradoException;
 import com.example.demo.exception.ServicioExternoException;

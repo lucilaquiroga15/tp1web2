@@ -1,4 +1,4 @@
-package com.example.demo.client.dummyjson;
+package com.example.demo.dummyjson;
 
 import java.util.List;
 
