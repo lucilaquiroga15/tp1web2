@@ -241,7 +241,7 @@ La API establece las siguientes reglas de acceso:
 - **Health y Swagger:** acceso público.
 - **Listas y favoritos:** requieren autenticación JWT.
 - **USER:** puede acceder a sus propias listas y favoritos.
-- **ADMIN:** puede acceder a recursos de otros usuarios según las reglas implementadas.
+- **ADMIN:** puede ver y operar sobre las listas y favoritos de cualquier usuario.
 
 Cuando se crea una lista, queda asociada al usuario autenticado.
 
@@ -490,19 +490,11 @@ La API respondió `403 Forbidden`.
 
 ![Acceso denegado a lista ajena](evidencias/tp3/07-lista-ajena-403.png)
 
-### 7.8. Acceso autenticado a listas
+### 7.8. Verificación en producción: 401 sin token y 200 con token
 
-Se ejecutó una solicitud `GET /api/listas` con autenticación válida y se obtuvo `200 OK`.
+Sobre la URL pública de Render, `GET /api/listas` responde `401 Unauthorized` sin token y `200 OK` con un JWT válido.
 
-![Acceso a listas con token](evidencias/tp3/08-listas-con-token-200.png)
-
-### 7.9. Acceso sin autenticación
-
-Se ejecutó una solicitud `GET /api/listas` sin JWT.
-
-La API respondió `401 Unauthorized`, confirmando que el endpoint está protegido.
-
-![Acceso sin token](evidencias/tp3/09-listas-sin-token-401.png)
+![401 sin token y 200 con token en Render](evidencias/tp3/10-render-401-y-200.png)
 
 ## 8. Conclusión del TP3
 
