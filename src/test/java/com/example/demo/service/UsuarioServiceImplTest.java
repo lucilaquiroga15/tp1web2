@@ -52,7 +52,8 @@ class UsuarioServiceImplTest {
 
         assertThat(guardado.passwordHash()).isEqualTo("HASH_SIMULADO");
         assertThat(guardado.passwordHash()).isNotEqualTo(passwordPlano);
-        assertThat(guardado.rol()).isEqualTo(Rol.ADMIN);    }
+        assertThat(guardado.rol()).isEqualTo(Rol.USER);
+    }
 
     @Test
     void registrar_emailExistente_lanzaConflicto() {
