@@ -1,7 +1,10 @@
+
 package com.example.demo.repository;
 
 import com.example.demo.domain.Lista;
 import com.example.demo.entity.ListaEntity;
+import com.example.demo.entity.UsuarioEntity;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,9 +14,13 @@ import java.util.Optional;
 public class ListaRepositoryAdapter implements ListaRepository {
 
     private final ListaJpaRepository jpaRepository;
+    private final EntityManager entityManager;
 
-    public ListaRepositoryAdapter(ListaJpaRepository jpaRepository) {
+    public ListaRepositoryAdapter(
+            ListaJpaRepository jpaRepository,
+            EntityManager entityManager) {
         this.jpaRepository = jpaRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -25,7 +32,8 @@ public class ListaRepositoryAdapter implements ListaRepository {
 
     @Override
     public Optional<Lista> buscarPorId(Long id) {
-        return jpaRepository.findById(id).map(this::aDominio);
+        return jpaRepository.findById(id)
+                .map(this::aDominio);
     }
 
     @Override
@@ -39,13 +47,32 @@ public class ListaRepositoryAdapter implements ListaRepository {
     }
 
     private Lista aDominio(ListaEntity entity) {
-        return new Lista(entity.getId(), entity.getNombre());
+        Long usuarioId = entity.getUsuario() == null
+                ? null
+                : entity.getUsuario().getId();
+
+        return new Lista(
+                entity.getId(),
+                entity.getNombre(),
+                usuarioId
+        );
     }
 
     private ListaEntity aEntidad(Lista lista) {
         ListaEntity entity = new ListaEntity();
+
         entity.setId(lista.id());
         entity.setNombre(lista.nombre());
+
+        if (lista.usuarioId() != null) {
+            UsuarioEntity usuario = entityManager.getReference(
+                    UsuarioEntity.class,
+                    lista.usuarioId()
+            );
+
+            entity.setUsuario(usuario);
+        }
+
         return entity;
     }
 }
