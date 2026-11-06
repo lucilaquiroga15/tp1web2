@@ -20,15 +20,15 @@ public class JwtService {
     private final long expiracionMs;
 
     public JwtService(
-            @Value("${JWT_SECRET}") String secreto,
-            @Value("${JWT_EXPIRATION_MS}") long expiracionMs) {
+        @Value("${app.jwt.secret}") String secreto,
+        @Value("${app.jwt.expiration-ms}") long expiracionMs) {
 
-        this.clave = Keys.hmacShaKeyFor(
-                secreto.getBytes(StandardCharsets.UTF_8)
-        );
+    this.clave = Keys.hmacShaKeyFor(
+            secreto.getBytes(StandardCharsets.UTF_8)
+    );
 
-        this.expiracionMs = expiracionMs;
-    }
+    this.expiracionMs = expiracionMs;
+}
 
     public String generarToken(Long usuarioId, String email, String rol) {
 

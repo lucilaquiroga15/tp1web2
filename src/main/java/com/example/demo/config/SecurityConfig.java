@@ -62,13 +62,13 @@ public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
                 .requestMatchers("/health")
                 .permitAll()
 
-                // Swagger público
+                                // Swagger público
                 .requestMatchers(
+                    "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
                 )
                 .permitAll()
-
                 
                 .anyRequest()
                 .authenticated()
